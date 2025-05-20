@@ -1,0 +1,550 @@
+/* Reset and base styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+/* Add to your CSS */
+:root {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-smooth: always;
+}
+
+body {
+  font-smooth: always;
+  text-rendering: optimizeSpeed;
+}
+
+.gaming-platform {
+  font-smooth: inherit;
+  text-rendering: inherit;
+}
+/* Main container */
+.gaming-platform {
+  min-height: 100vh;
+  width: 100%;
+  background: linear-gradient(to bottom right, #1E2A38, #3B1E43);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.container {
+  width: 100%;
+  max-width: 1200px;
+}
+
+/* Profile Card */
+.profile-card {
+  width: 100%;
+  background-color: #1e3a53;
+  border-radius: 8px;
+  padding: 24px;
+  margin-bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.profile-image-container {
+  width: 100%;
+  max-width: 220px;
+  aspect-ratio: 1 / 1;
+  position: relative;
+}
+
+.profile-image {
+  border-radius: 6px;
+  object-fit: cover;
+}
+
+.profile-info {
+  color: white;
+}
+
+.profile-name {
+  font-size: 1.875rem;
+  font-weight: bold;
+  margin-bottom: 16px;
+}
+
+.profile-location {
+  color: #cbd5e0;
+  margin-bottom: 8px;
+}
+
+.profile-description {
+  color: #cbd5e0;
+  margin-top: 24px;
+}
+
+/* Library Section */
+.library-section {
+  width: 100%;
+}
+
+.library-header {
+  background-color: #1e3a53;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  border-radius: 10px;
+}
+
+.library-title {
+  color: white;
+  font-size: 1.125rem;
+  font-weight: 500;
+  padding: 10px;
+}
+
+.search-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #2a3b4d;
+  border-radius: 6px;
+  padding: 0 8px;
+}
+
+.search-icon,
+.settings-icon {
+  width: 16px;
+  height: 16px;
+  color: #a0aec0;
+}
+
+.search-input {
+  border: none;
+  background-color: transparent;
+  color: white;
+  height: 32px;
+  padding: 0 8px;
+  outline: none;
+}
+
+.search-input::placeholder {
+  color: #a0aec0;
+}
+
+/* Games Grid */
+.games-grid {
+  background-color: #1e3a53;
+  border-radius: 6px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.game-card {
+  background-color: #1e3a53;
+  border: 2px solid #2a4b66;
+  border-radius: 6px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.game-image-container {
+  width: 100%;
+  aspect-ratio: 3 / 4; 
+  position: relative;
+  background-color: #4a5568;
+}
+
+.game-image-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.game-image {
+  object-fit: cover;  
+  width: 100%;         
+  height: 100%;       
+}
+
+.game-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 12px;
+}
+
+.game-title-overlay {
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  font-size: 0.75rem;
+  font-weight: bold;
+  padding: 4px;
+  align-self: flex-start;
+}
+
+.game-price-overlay {
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  font-size: 0.75rem;
+  padding: 4px;
+  align-self: flex-start;
+  margin-top: auto;
+}
+
+.game-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: #a0aec0;
+}
+
+.game-info {
+  padding: 8px;
+  text-align: center;
+}
+
+.game-title {
+  color: white;
+  font-size: 0.875rem;
+}
+
+.game-price {
+  color: #a0aec0;
+  font-size: 0.75rem;
+}
+
+/* Add Button */
+.add-button-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 24px;
+}
+
+.add-button {
+  background-color: #124572;
+  padding: 12px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.add-button:hover {
+  background-color: #1a1a1a;
+}
+
+.add-icon {
+  width: 24px;
+  height: 24px;
+  color: white;
+}
+
+
+@media (min-width: 768px) {
+  .profile-card {
+    flex-direction: row;
+  }
+
+  .games-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .games-grid {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+/* Add these to your CSS file */
+/* Price category colors */
+.cheap-price {
+  color: #4CAF50; /* Green */
+}
+
+.average-price {
+  color: #FFC107; /* Amber/Yellow */
+}
+
+.expensive-price {
+  color: #F44336; /* Red */
+}
+
+/* Make sure the colors are visible in both light and dark modes */
+.game-title.cheap-price,
+.game-title-overlay.cheap-price {
+  color: #4CAF50 !important;
+}
+
+.game-title.average-price,
+.game-title-overlay.average-price {
+  color: #FFC107 !important;
+}
+
+.game-title.expensive-price,
+.game-title-overlay.expensive-price {
+  color: #F44336 !important;
+}
+/* Price Legend Styles */
+.price-legend {
+  margin-top: 2rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  max-width: 400px;
+}
+
+.price-legend h3 {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+}
+
+.legend-items {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.color-dot {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.color-dot.cheap-price {
+  background-color: #4CAF50;
+}
+
+.color-dot.average-price {
+  background-color: #FFC107;
+}
+
+.color-dot.expensive-price {
+  background-color: #F44336;
+}
+
+.charts-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+}
+
+.chart-wrapper {
+  position: relative;
+  height: 300px;
+  width: 100%;
+}
+.auto-add-button {
+  padding: 0.5rem 1rem;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.auto-add-button:hover {
+  background-color: #45a049;
+}
+
+.auto-add-button.active {
+  background-color: #f44336;
+}
+
+.auto-add-button.active:hover {
+  background-color: #d32f2f;
+}
+
+.network-status-bar {
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  border-bottom: 1px solid #eaeaea;
+}
+
+.online-status {
+  color: #4CAF50;
+}
+
+.warning-status {
+  color: #FF9800;
+}
+
+.offline-status {
+  color: #F44336;
+}
+
+.network-status-bar .icon {
+  width: 16px;
+  height: 16px;
+}
+
+.sync-button {
+  margin-left: 12px;
+  padding: 4px 8px;
+  background: #FF9800;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.sync-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.status-banner {
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 4px;
+  text-align: center;
+}
+
+/* Network down (device offline) */
+.status-banner.network-down {
+  background-color: #ff9800; /* Orange */
+  color: white;
+}
+
+/* Server down (API unreachable) */
+.status-banner.server-down {
+  background-color: #f44336; /* Red */
+  color: white;
+}
+
+/* Normal error */
+.status-banner:not(.network-down):not(.server-down) {
+  background-color: #e0e0e0; /* Light gray */
+}
+
+.retry-button {
+  margin-left: 10px;
+  padding: 2px 8px;
+  background: white;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.network-down .retry-button {
+  background: #e0e0e0;
+}
+
+.server-down .retry-button {
+  background: #e0e0e0;
+  color: #f44336;
+}
+/* View options */
+.view-options {
+  display: flex;
+  gap: 10px;
+  margin: 0 10px;
+}
+
+.view-option {
+  padding: 5px 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.view-option.active {
+  background: #0070f3;
+  color: white;
+  border-color: #0070f3;
+}
+
+.view-option:hover {
+  background: #f0f0f0;
+}
+
+.view-option.active:hover {
+  background: #0060d3;
+}
+
+/* Library controls */
+.library-controls {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex-wrap: wrap;
+  margin-bottom: 15px;
+}
+
+/* Loading states */
+.loading-more {
+  width: 100%;
+  text-align: center;
+  padding: 20px;
+  color: #666;
+  font-style: italic;
+}
+
+.no-more-games {
+  width: 100%;
+  text-align: center;
+  padding: 20px;
+  color: #888;
+  font-style: italic;
+}
+.status-banner {
+  padding: 8px 16px;
+  margin: 10px 0;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.status-banner.info {
+  background-color: #e6f7ff;
+  color: #0052cc;
+  border: 1px solid #b3e0ff;
+}
+
+.status-banner.warning {
+  background-color: #fffbe6;
+  color: #d48806;
+  border: 1px solid #ffe58f;
+}
+
+.status-banner.error {
+  background-color: #fff1f0;
+  color: #cf1322;
+  border: 1px solid #ffa39e;
+}

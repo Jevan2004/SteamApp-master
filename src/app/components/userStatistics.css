@@ -1,0 +1,81 @@
+/* User Statistics Section Styles */
+.user-statistics-section {
+    margin-top: 2rem;
+    padding: 1.5rem;
+    background-color: #1e3a53;
+    border-radius: 8px;
+  }
+  
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+  }
+  
+  .section-title {
+    color: white;
+    font-size: 1.25rem;
+    font-weight: 600;
+  }
+  
+  .error-message {
+    background-color: rgba(244, 67, 54, 0.1);
+    color: #f44336;
+    padding: 0.75rem;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+  }
+  
+  .loading-message,
+  .no-data-message {
+    color: #a0aec0;
+    text-align: center;
+    padding: 2rem;
+    width: 100%;
+  }
+  
+  .game-stats {
+    display: flex;
+    flex-direction: column;
+    margin-top: 0.5rem;
+    font-size: 0.75rem;
+    color: #cbd5e0;
+  }
+  
+  .stat-item {
+    margin-right: 0.75rem;
+  }
+  
+  .stat-label {
+    color: #a0aec0;
+  }
+  
+  .load-more-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 1.5rem;
+  }
+  
+  .load-more-button {
+    background-color: #2a4b66;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 0.5rem 1.5rem;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .load-more-button:hover {
+    background-color: #3a5d7a;
+  }
+  
+  .loading-more {
+    text-align: center;
+    color: #a0aec0;
+    padding: 1rem;
+    font-style: italic;
+  }
+  
