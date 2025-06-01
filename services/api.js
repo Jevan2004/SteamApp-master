@@ -1,6 +1,6 @@
 import { tryOrQueue } from "@/app/utils/offlineSync";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+const API_BASE_URL = process.env.API_BASE_URL;
 
 export const getGames = async (params = {}) => {
   try {
