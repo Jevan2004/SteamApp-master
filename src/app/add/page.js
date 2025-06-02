@@ -1,10 +1,9 @@
 "use client"
-import { useState, useEffect } from "react"
+import React, { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { addGame, addGameStats } from "../../../services/api"
 import "./addGame.css"
 import { tryOrQueue, saveGameDataForOffline, saveOfflineUserStats } from "../../app/utils/offlineSync";
-const [isOnline, setIsOnline] = useState(false);
 
 export default function AddGamePage() {
   const router = useRouter()
