@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation"
 import { addGame, addGameStats } from "../../../services/api"
 import "./addGame.css"
 import { tryOrQueue, saveGameDataForOffline, saveOfflineUserStats } from "../../app/utils/offlineSync";
+const [isOnline, setIsOnline] = useState(false);
 
 export default function AddGamePage() {
   const router = useRouter()
@@ -26,15 +27,16 @@ export default function AddGamePage() {
   const [isOnline, setIsOnline] = useState(navigator.onLine)
 
   // Check online status
-  useEffect(() => {
-    const updateOnlineStatus = () => setIsOnline(navigator.onLine)
-    window.addEventListener("online", updateOnlineStatus)
-    window.addEventListener("offline", updateOnlineStatus)
-    return () => {
-      window.removeEventListener("online", updateOnlineStatus)
-      window.removeEventListener("offline", updateOnlineStatus)
-    }
-  }, [])
+useEffect(() => {
+  setIsOnline(navigator.onLine);
+  const updateOnlineStatus = () => setIsOnline(navigator.onLine);
+  window.addEventListener("online", updateOnlineStatus);
+  window.addEventListener("offline", updateOnlineStatus);
+  return () => {
+    window.removeEventListener("online", updateOnlineStatus);
+    window.removeEventListener("offline", updateOnlineStatus);
+  };
+}, []);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target
