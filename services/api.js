@@ -1,6 +1,7 @@
 import { tryOrQueue } from "@/app/utils/offlineSync";
+import { use } from "react";
 
-const API_BASE_URL = 'https://steamappserver-production.up.railway.app/api';
+const API_BASE_URL = 'steamappserver-production.up.railway.app/api';
 
 export const getGames = async (params = {}) => {
   try {
@@ -123,22 +124,26 @@ export const addGame = async (gameData) => {
   }
 };
 export const addGameStats = async (gameId, statsData) => {
+  const userId = localStorage.getItem('userId');
+  if (!userId) throw new Error('User not logged in');
+
   const response = await fetch(`${API_BASE_URL}/games/${gameId}/stats`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      userId: 1,  // Hardcoded user ID
+      userId: parseInt(userId),  // ✅ Use real user ID
       achievements: statsData.achievements || 0,
-      hours_played: statsData.hoursPlayed || 0,  // Note the backend field name
+      hours_played: statsData.hoursPlayed || 0,
       score: statsData.score || 0,
       finished: statsData.finished || false,
       review: statsData.review || 'No review yet'
     })
   });
-  
-  if (!response.ok) throw new Error('Failed to add stats')
-  return await response.json()
-}
+
+  if (!response.ok) throw new Error('Failed to add stats');
+  return await response.json();
+};
+
 export const updateGame = async (id, updates) => {
   const response = await fetch(`${API_BASE_URL}/games/${id}`, {
     method: 'PUT',
@@ -150,18 +155,23 @@ export const updateGame = async (id, updates) => {
   return await response.json();
 };
 export const updateGameStats = async (gameId, stats) => {
+  const userId = localStorage.getItem('userId');
+  if (!userId) throw new Error('User not logged in');
+
   const response = await fetch(`${API_BASE_URL}/games/${gameId}/stats`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      userId: 1,  // Hardcoded user ID
+      userId: parseInt(userId),
       ...stats,
-      hours_played: stats.hoursPlayed  // Convert frontend field name to backend
+      hours_played: stats.hoursPlayed
     })
-  })
-  if (!response.ok) throw new Error('Failed to update stats')
-  return await response.json()
-}
+  });
+
+  if (!response.ok) throw new Error('Failed to update stats');
+  return await response.json();
+};
+
 export const deleteGameStats = async (gameId) => {
   const response = await fetch(`${API_BASE_URL}/games/${gameId}/stats`, {
     method: 'DELETE'
@@ -191,3 +201,44 @@ export const getUserById = async (userId) => {
   return await response.json()
 }
 
+
+export const login = async (username, password) => {
+  try {
+    console.log("pula");
+        console.log(username, password);
+    const response = await fetch(`${API_BASE_URL}/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password }),
+    });
+    console.log(response);
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({}));
+      throw new Error(error.message || `Login failed with status ${response.status}`);
+    }
+
+    const data = await response.json();
+    localStorage.setItem('token', data.token);
+    localStorage.setItem('userId', data.user?.id); // optional
+    localStorage.setItem('username', username); // optional
+    return data;
+  } catch (error) {
+    console.error('Login error:', error);
+    throw error;
+  }
+};
+
+export const logout = async () => {
+  try {
+    await fetch(`${API_BASE_URL}/logout`, {
+      method: 'POST',
+      headers: authHeader(),
+    });
+  } catch (error) {
+    console.warn('Logout warning:', error);
+  } finally {
+    localStorage.removeItem('token');
+    localStorage.removeItem('userId');
+    localStorage.removeItem('username');
+  }
+};
