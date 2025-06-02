@@ -1,7 +1,7 @@
 import { tryOrQueue } from "@/app/utils/offlineSync";
 import { use } from "react";
 
-const API_BASE_URL = 'steamappserver-production.up.railway.app/api';
+const API_BASE_URL = 'https://steamappserver-production.up.railway.app/api';
 
 export const getGames = async (params = {}) => {
   try {
