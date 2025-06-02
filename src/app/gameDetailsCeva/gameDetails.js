@@ -3,7 +3,7 @@ import { useState, useEffect } from "react"
 import Image from "next/image"
 import "./gameDetails.css"
 
-export default function GameDetails({ game, userStat = {}, updateUserStat, deleteUserStat, deleteGame }) {
+export default function GameDetails({ game, userStat = {}, updateUserStat, deleteUserStat, deleteGame, isOffline }) {
   // Map API field names to component expected names
   const mappedUserStat = {
     achievements: userStat?.achievements || 0,
@@ -37,7 +37,7 @@ export default function GameDetails({ game, userStat = {}, updateUserStat, delet
       if (!hasStats && savedGameData) {
         const { gameData, statsData } = JSON.parse(savedGameData)
         setAchievements(statsData.achievements || 0)
-        setHoursPlayed(statsData.hoursPlayed || 0)
+        setHoursPlayed(statsData.hours_played || 0)
         setScore(statsData.score || 0)
         setReview(statsData.review || "")
         setFinished(statsData.finished || false)
@@ -45,69 +45,75 @@ export default function GameDetails({ game, userStat = {}, updateUserStat, delet
     }
   }, [gameId, hasStats])
 
-  const handleSave = () => {
-    const updatedStats = {
-      achievements: Number(achievements),
-      hoursPlayed: Number(hoursPlayed), // Frontend field name
-      score: Number(score),
-      review,
-      finished,
-    };
-    console.log(updatedStats);
-    updateUserStat(updatedStats)
-      .then(updatedData => {
-        // console.log(updatedData)
-        if (!updatedData) return;
+  const handleSave = async () => {
+    try {
+      const updatedStats = {
+        achievements: Number(achievements),
+        hoursPlayed: Number(hoursPlayed),
+        score: Number(score),
+        review,
+        finished,
+      };
 
-        // Update local state with the response
-        setAchievements(updatedData.achievements);
-        setHoursPlayed(updatedData.hours_played); // Backend field name
-        setScore(updatedData.score);
-        setReview(updatedData.review);
-        setFinished(updatedData.finished);
-        
-        // Update localStorage
-        const savedGameData = localStorage.getItem(`game_${gameId}`);
-        if (savedGameData) {
-          const { gameData } = JSON.parse(savedGameData);
-          localStorage.setItem(`game_${gameId}`, JSON.stringify({ 
-            gameData, 
-            statsData: {
-              achievements: updatedData.achievements,
-              hoursPlayed: updatedData.hours_played, // Map to frontend name
-              score: updatedData.score,
-              review: updatedData.review,
-              finished: updatedData.finished
-            }
-          }));
-        }
-        
-        setEditing(false);
-      })
-      .catch(error => {
-        setError(error.message);
-      });
+      const updatedData = await updateUserStat(updatedStats);
+      if (!updatedData) return;
+
+      // Update local state with the response
+      setAchievements(updatedData.achievements);
+      setHoursPlayed(updatedData.hours_played);
+      setScore(updatedData.score);
+      setReview(updatedData.review);
+      setFinished(updatedData.finished);
+      
+      // Update localStorage
+      const savedGameData = localStorage.getItem(`game_${gameId}`);
+      if (savedGameData) {
+        const { gameData } = JSON.parse(savedGameData);
+        localStorage.setItem(`game_${gameId}`, JSON.stringify({ 
+          gameData, 
+          statsData: {
+            achievements: updatedData.achievements,
+            hours_played: updatedData.hours_played,
+            score: updatedData.score,
+            review: updatedData.review,
+            finished: updatedData.finished
+          }
+        }));
+      }
+      
+      setEditing(false);
+    } catch (error) {
+      setError(error.message);
+    }
   };
 
-  const handleDelete = () => {
-    if (typeof deleteUserStat === "function") {
-      deleteUserStat(game.id)
-      localStorage.removeItem(`game_${game.id}`)
-      // Reset local state
-      setAchievements(0)
-      setHoursPlayed(0)
-      setScore(0)
-      setReview("")
-      setFinished(false)
+  const handleDelete = async () => {
+    try {
+      if (typeof deleteUserStat === "function") {
+        await deleteUserStat();
+        localStorage.removeItem(`game_${game.id}`);
+        // Reset local state
+        setAchievements(0);
+        setHoursPlayed(0);
+        setScore(0);
+        setReview("");
+        setFinished(false);
+      }
+    } catch (error) {
+      setError(error.message);
     }
-  }
+  };
 
-  const handleDeleteGame = () => {
-    if (typeof deleteGame === "function") {
-      deleteGame()
-      localStorage.removeItem(`game_${game.id}`)
+  const handleDeleteGame = async () => {
+    try {
+      if (typeof deleteGame === "function") {
+        await deleteGame();
+        localStorage.removeItem(`game_${game.id}`);
+      }
+    } catch (error) {
+      setError(error.message);
     }
-  }
+  };
 
   if (error) {
     return <div className="error">{error}</div>
@@ -166,7 +172,12 @@ export default function GameDetails({ game, userStat = {}, updateUserStat, delet
             <div className="stats-row">
               <span className="stats-label">Number of Achievements:</span>
               {editing ? (
-                <input type="number" value={achievements} onChange={(e) => setAchievements(e.target.value)} />
+                <input 
+                  type="number" 
+                  value={achievements} 
+                  onChange={(e) => setAchievements(e.target.value)}
+                  disabled={isOffline}
+                />
               ) : (
                 <span className="stats-value">{achievements || "N/A"}</span>
               )}
@@ -174,7 +185,12 @@ export default function GameDetails({ game, userStat = {}, updateUserStat, delet
             <div className="stats-row">
               <span className="stats-label">Hours Played:</span>
               {editing ? (
-                <input type="number" value={hoursPlayed} onChange={(e) => setHoursPlayed(e.target.value)} />
+                <input 
+                  type="number" 
+                  value={hoursPlayed} 
+                  onChange={(e) => setHoursPlayed(e.target.value)}
+                  disabled={isOffline}
+                />
               ) : (
                 <span className="stats-value">{hoursPlayed || "N/A"}</span>
               )}
@@ -182,7 +198,12 @@ export default function GameDetails({ game, userStat = {}, updateUserStat, delet
             <div className="stats-row">
               <span className="stats-label">Game Finished:</span>
               {editing ? (
-                <input type="checkbox" checked={finished} onChange={(e) => setFinished(e.target.checked)} />
+                <input 
+                  type="checkbox" 
+                  checked={finished} 
+                  onChange={(e) => setFinished(e.target.checked)}
+                  disabled={isOffline}
+                />
               ) : (
                 <span className="stats-value">{finished ? "Yes" : "No"}</span>
               )}
@@ -190,7 +211,14 @@ export default function GameDetails({ game, userStat = {}, updateUserStat, delet
             <div className="stats-row">
               <span className="stats-label">Your Score:</span>
               {editing ? (
-                <input type="number" value={score} min="0" max="10" onChange={(e) => setScore(e.target.value)} />
+                <input 
+                  type="number" 
+                  value={score} 
+                  min="0" 
+                  max="10" 
+                  onChange={(e) => setScore(e.target.value)}
+                  disabled={isOffline}
+                />
               ) : (
                 <span className="stats-value">{score || "N/A"}</span>
               )}
@@ -198,7 +226,11 @@ export default function GameDetails({ game, userStat = {}, updateUserStat, delet
             <div className="stats-row full-width">
               <span className="stats-label">Your Review:</span>
               {editing ? (
-                <textarea value={review} onChange={(e) => setReview(e.target.value)} />
+                <textarea 
+                  value={review} 
+                  onChange={(e) => setReview(e.target.value)}
+                  disabled={isOffline}
+                />
               ) : (
                 <p>{review || "No review yet"}</p>
               )}
@@ -206,22 +238,38 @@ export default function GameDetails({ game, userStat = {}, updateUserStat, delet
           </div>
           <div className="button-container">
             {editing ? (
-              <button className="save-button" onClick={handleSave}>
+              <button 
+                className="save-button" 
+                onClick={handleSave}
+                disabled={isOffline}
+              >
                 Save
               </button>
             ) : (
               <>
-                <button className="edit-button" onClick={() => setEditing(true)}>
+                <button 
+                  className="edit-button" 
+                  onClick={() => setEditing(true)}
+                  disabled={isOffline}
+                >
                   {Object.keys(userStat).length > 0 ? "Edit" : "Add Stats"}
                 </button>
                 {Object.keys(userStat).length > 0 && (
-                  <button className="delete-button" onClick={handleDelete}>
+                  <button 
+                    className="delete-button" 
+                    onClick={handleDelete}
+                    disabled={isOffline}
+                  >
                     Delete Stats
                   </button>
                 )}
               </>
             )}
-            <button className="delete-game-button" onClick={handleDeleteGame}>
+            <button 
+              className="delete-game-button" 
+              onClick={handleDeleteGame}
+              disabled={isOffline}
+            >
               Remove Game
             </button>
           </div>

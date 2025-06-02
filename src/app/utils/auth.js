@@ -21,14 +21,50 @@ export const clearToken = () => {
 
 export const isAuthenticated = () => {
   if (typeof window === 'undefined') return false;
-
-  const token = localStorage.getItem(JWT_KEY);
+  
+  const token = localStorage.getItem('token');
   if (!token) return false;
 
   try {
-    const payload = JSON.parse(atob(token.split('.')[1]));
-    return payload.exp > Date.now() / 1000;
-  } catch {
+    // Basic token validation - you can add more checks here
+    const tokenParts = token.split('.');
+    if (tokenParts.length !== 3) return false;
+
+    // Check if token is expired
+    const payload = JSON.parse(atob(tokenParts[1]));
+    const expiry = payload.exp * 1000; // Convert to milliseconds
+    if (Date.now() >= expiry) {
+      // Token expired, clear storage
+      localStorage.removeItem('token');
+      localStorage.removeItem('userId');
+      localStorage.removeItem('username');
+      return false;
+    }
+
+    return true;
+  } catch (error) {
+    console.error('Token validation error:', error);
     return false;
   }
+};
+
+export const setAuthToken = (token, userId, username) => {
+  localStorage.setItem('token', token);
+  localStorage.setItem('userId', userId);
+  localStorage.setItem('username', username);
+};
+
+export const clearAuth = () => {
+  localStorage.removeItem('token');
+  localStorage.removeItem('userId');
+  localStorage.removeItem('username');
+};
+
+export const getCurrentUser = () => {
+  if (!isAuthenticated()) return null;
+  
+  return {
+    userId: localStorage.getItem('userId'),
+    username: localStorage.getItem('username')
+  };
 };

@@ -9,6 +9,7 @@ import {
   getOfflineUserStats,
   tryOrQueue,
 } from "../../../src/app/utils/offlineSync"
+
 export default function GamePage() {
   const searchParams = useSearchParams()
   const router = useRouter()
@@ -31,6 +32,7 @@ export default function GamePage() {
       window.removeEventListener("offline", updateOnlineStatus)
     }
   }, [])
+
   useEffect(() => {
     const fetchGameData = async () => {
       try {
@@ -38,7 +40,6 @@ export default function GamePage() {
 
         // Check if we're in offline mode first
         if (isOfflineMode || !navigator.onLine) {
-          // Try to load from localStorage first
           const offlineGames = JSON.parse(localStorage.getItem("gamesData") || "[]");
           const offlineGame = offlineGames.find(g => g.id === gameId);
           const offlineStats = JSON.parse(localStorage.getItem("userStats") || "{}");
@@ -51,7 +52,6 @@ export default function GamePage() {
             return;
           }
           
-          // If not in localStorage, try sessionStorage
           const sessionData = sessionStorage.getItem(`offlineGame-${gameId}`);
           if (sessionData) {
             const parsedData = JSON.parse(sessionData);
@@ -70,10 +70,9 @@ export default function GamePage() {
           getUserStats(gameId).catch((e) => {
             console.error("Failed to fetch user stats", e)
             return {}
-          }), // Fallback if no stats exist
+          }),
         ])
-        console.log("Fetched gameData:", gameData)
-        console.log("User stats", statsData)
+
         if (!gameData) {
           throw new Error("Game not found")
         }
@@ -108,6 +107,7 @@ export default function GamePage() {
       router.push("/")
     }
   }, [gameId, router, isOfflineMode])
+
   const handleUpdateStat = async (updatedStats) => {
     if (!isOnline) {
       alert("Cannot update stats while offline");
@@ -115,15 +115,20 @@ export default function GamePage() {
     }
   
     try {
-      const updatedStat = await updateGameStats(selectedGame.id, updatedStats);
+      const updatedStat = await updateGameStats(selectedGame.id, {
+        achievements: updatedStats.achievements,
+        hours_played: updatedStats.hoursPlayed,
+        finished: updatedStats.finished,
+        score: updatedStats.score,
+        review: updatedStats.review
+      });
       setUserStat(updatedStat);
-      return updatedStat; // ✅ Add this line!
+      return updatedStat;
     } catch (err) {
       console.error("Error updating stats:", err);
       setError("Failed to update stats");
     }
   };
-  
 
   const handleDeleteStat = async () => {
     if (!isOnline) {
@@ -141,22 +146,20 @@ export default function GamePage() {
   }
 
   const handleDeleteGame = async () => {
-    const op = {
-      type: "delete",
-      entity: "game",
-      payload: { gameId: selectedGame.id },
+    if (!isOnline) {
+      alert("Cannot delete game while offline")
+      return
     }
 
-    await tryOrQueue(op, async () => {
+    try {
       await deleteGame(selectedGame.id)
       router.push("/")
-    })
-
-    // Optimistically update UI if online
-    if (isOnline) {
-      router.push("/")
+    } catch (err) {
+      console.error("Error deleting game:", err)
+      setError("Failed to delete game")
     }
   }
+
   if (loading) {
     return <div className="loading">Loading game details...</div>
   }
@@ -166,7 +169,7 @@ export default function GamePage() {
   }
 
   if (!selectedGame) {
-    return null // or redirect handled in useEffect
+    return null
   }
 
   return (
