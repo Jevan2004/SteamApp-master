@@ -23,7 +23,7 @@ export default function AddGamePage() {
   })
   const [successMessage, setSuccessMessage] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [isOnline, setIsOnline] = useState(navigator.onLine)
+const [isOnline, setIsOnline] = useState(false)
 
   // Check online status
 useEffect(() => {
