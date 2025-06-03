@@ -46,6 +46,21 @@ export default function GamingPlatform({ onLogout }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearching, setIsSearching] = useState(false);
   const [showUserStats, setShowUserStats] = useState(true)
+useEffect(() => {
+  const filtered = allGames.filter(game => 
+    game.title.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+  const sorted = sortGamesByName(filtered, sortOrder);
+
+  if (scrollOption === 'pagination') {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    setDisplayedGames(sorted.slice(startIndex, endIndex));
+  } else {
+    const endIndex = page * LOAD_MORE_SIZE;
+    setDisplayedGames(sorted.slice(0, endIndex));
+  }
+}, [sortOrder, allGames, currentPage, page, itemsPerPage, searchQuery, scrollOption]);
 
   const fetchData = useCallback(async (isInitial = false) => {
     try {
